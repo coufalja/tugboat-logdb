@@ -1,6 +1,6 @@
 # tugboat-logdb
 
-This is the default Log DB implementation for the [Tugboat](https://github.com/coufalja/tugboat) library.
+This is the default LogDB implementation for the [Tugboat](https://github.com/coufalja/tugboat) library.
 
 ## How to use
 
@@ -10,7 +10,8 @@ package main
 import (
 	"github.com/coufalja/tugboat"
 	"github.com/coufalja/tugboat/config"
-	"github.com/coufalja/tugboat-transport/tcp" // Import the tcp package
+	"github.com/coufalja/tugboat-transport/tcp"
+	"github.com/coufalja/tugboat-logdb/pebble" // Import the pebble package
 )
 
 func main() {
@@ -27,6 +28,9 @@ func main() {
 		MutualTLS:                     false,
 		RaftAddress:                   "localhost:8079", // The same RaftAddress must be passed both to transport and the NodeHost
 	}
-	_, _ = tugboat.NewNodeHost(nhc, tcp.Factory(cfg))
+	// Configure LogDB
+	lcfg := pebble.GetDefaultLogDBConfig()
+	lcfg.KVLRUCacheSize = 2048
+	_, _ = tugboat.NewNodeHost(nhc, tcp.Factory(cfg), pebble.Factory(lcfg))
 }
 ```
