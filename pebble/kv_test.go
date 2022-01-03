@@ -32,7 +32,7 @@ func TestKVCanBeCreatedAndClosed(t *testing.T) {
 	fs := vfs.NewMem()
 	defer leaktest.AfterTest(t)()
 	cfg := GetDefaultLogDBConfig()
-	kvs, err := newDefaultKVStore(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
+	kvs, err := openPebbleDB(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
 	if err != nil {
 		t.Fatalf("failed to open kv store %v", err)
 	}
@@ -46,7 +46,7 @@ func runKVTest(t *testing.T, tf func(t *testing.T, kvs *KV), fs vfs.FS) {
 	defer leaktest.AfterTest(t)()
 	defer deleteTestDB(fs)
 	cfg := GetDefaultLogDBConfig()
-	kvs, err := newDefaultKVStore(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
+	kvs, err := openPebbleDB(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
 	if err != nil {
 		t.Fatalf("failed to open kv store %v", err)
 	}
@@ -303,7 +303,7 @@ func TestCompactionReleaseStorageSpace(t *testing.T) {
 	lk.SetEntryKey(100, 1, maxIndex+1)
 	cfg := GetDefaultLogDBConfig()
 	func() {
-		kvs, err := newDefaultKVStore(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
+		kvs, err := openPebbleDB(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
 		if err != nil {
 			t.Fatalf("failed to open kv store %v", err)
 		}
@@ -328,7 +328,7 @@ func TestCompactionReleaseStorageSpace(t *testing.T) {
 	if sz < 1024*1024*8 {
 		t.Errorf("unexpected size %d", sz)
 	}
-	kvs, err := newDefaultKVStore(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
+	kvs, err := openPebbleDB(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
 	if err != nil {
 		t.Fatalf("failed to open kv store %v", err)
 	}
@@ -448,7 +448,7 @@ func testDiskCorruptionIsHandled(t *testing.T, wal bool, cut bool, fs vfs.FS) {
 	defer deleteTestDB(fs)
 	cfg := GetDefaultLogDBConfig()
 	func() {
-		kvs, err := newDefaultKVStore(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
+		kvs, err := openPebbleDB(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
 		if err != nil {
 			t.Fatalf("failed to open kv store %v", err)
 		}
@@ -503,7 +503,7 @@ func testDiskCorruptionIsHandled(t *testing.T, wal bool, cut bool, fs vfs.FS) {
 	if !corrupted {
 		t.Fatalf("failed to corrupt data files")
 	}
-	kvs, err := newDefaultKVStore(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
+	kvs, err := openPebbleDB(cfg, nil, RDBTestDirectory, RDBTestDirectory, fs)
 	if err == nil {
 		defer kvs.Close()
 	}
