@@ -26,6 +26,6 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/exp v0.0.0-20200513190911-00229845015e // indirect
-	golang.org/x/sys v0.0.0-20210909193231-528a39cd75f3 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	golang.org/x/sys v0.1.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
